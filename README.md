@@ -6,7 +6,7 @@ I am following the tutorial at [http://www.multigesture.net/articles/how-to-writ
 
 ## State
 
-At this time it runs a few demos but is far to be complete.
+At this time it runs a few demos but is far to be complete. Not fully implemented and buggy.
 
 ## Sources
 

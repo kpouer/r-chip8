@@ -69,7 +69,7 @@ impl Cpu {
             (0x0F, _, 0x05, 0x05, _) => { self.op_fx55_mem(opcode, memory); }
             (0x0F, _, 0x06, 0x05, _) => { self.op_fx65_mem(opcode, memory); }
             _ => {
-                println!("Unknown opcode: {:#X}", opcode.4);
+                println!("Unknown opcode: {:#06X}", opcode.4);
                 panic!();
             }
         }
