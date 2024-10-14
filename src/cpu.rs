@@ -32,42 +32,99 @@ impl Cpu {
 
     fn fetch_opcode(&self, memory: &[u8; 4096]) -> (u8, u8, u8, u8, u16) {
         let pc = self.pc;
-        let opcode = (( memory[pc as usize] as u16) << 8) | memory[(pc + 1) as usize] as u16;
+        let opcode = ((memory[pc as usize] as u16) << 8) | memory[(pc + 1) as usize] as u16;
         let b1: u8 = ((opcode & 0xF000) >> 12) as u8;
-        let b2: u8 = ((opcode & 0x0F00) >> 8)  as u8;
+        let b2: u8 = ((opcode & 0x0F00) >> 8) as u8;
         let b3: u8 = ((opcode & 0x00F0) >> 4) as u8;
         let b4: u8 = (opcode & 0x000F) as u8;
         (b1, b2, b3, b4, opcode)
     }
 
-    fn execute(&mut self, opcode: (u8, u8, u8, u8, u16), display: &mut Display, memory: &mut [u8; 4096]) {
+    fn execute(
+        &mut self,
+        opcode: (u8, u8, u8, u8, u16),
+        display: &mut Display,
+        memory: &mut [u8; 4096],
+    ) {
         match opcode {
-            (0x00, 0x00, 0x00, 0x00, _) => { self.op_0nnn_call(opcode); }
-            (0x00, 0x00, 0x0E, 0x00, _) => { self.op_00e0_display(display); }
-            (0x00, 0x00, 0x0E, 0x0E, _) => { self.op_00ee_flow(); }
-            (0x01, _, _, _, _) => { self.op_1nnn_flow(opcode); }
-            (0x02, _, _, _, _) => { self.op_2nnn_flow(opcode); }
-            (0x03, _, _, _, _) => { self.op_3xnn_cond(opcode); }
-            (0x04, _, _, _, _) => { self.op_4xnn_cond(opcode); }
-            (0x05, _, _, 0x00, _) => { self.op_5xy0_cond(opcode); }
-            (0x06, _, _, _, _) => { self.ld_v(opcode); }
-            (0x07, _, _, _, _) => { self.add_x(opcode); }
-            (0x08, _, _, 0x00, _) => { self.op_8xy4_assig(opcode); }
-            (0x08, _, _, 0x02, _) => { self.op_8xy2_bitop(opcode); }
-            (0x08, _, _, 0x03, _) => { self.op_8xy3_bitop(opcode); }
-            (0x08, _, _, 0x04, _) => { self.op_8xy4_math(opcode); }
-            (0x08, _, _, 0x05, _) => { self.op_8xy5_math(opcode); }
-            (0x08, _, _, 0x0E, _) => { self.op_8xye_bitop(opcode); }
-            (0x09, _, _, 0x00, _) => { self.op_9xy0_cond(opcode); }
-            (0x0A, _, _, _, _) => { self.ld_i(opcode); }
-            (0x0B, _, _, _, _) => { self.bnnn_flow(opcode); }
-            (0x0C, _, _, _, _) => { self.rnd_v(opcode); }
-            (0x0D, _, _, _, _) => { self.drw(opcode, display, memory); }
-            (0x0F, _, 0x01, 0x05, _) => { self.op_fx15_timer(opcode); }
-            (0x0F, _, 0x01, 0x0E, _) => { self.op_fx1e_mem(opcode); }
-            (0x0F, _, 0x02, 0x09, _) => { self.op_fx29_mem(opcode); }
-            (0x0F, _, 0x05, 0x05, _) => { self.op_fx55_mem(opcode, memory); }
-            (0x0F, _, 0x06, 0x05, _) => { self.op_fx65_mem(opcode, memory); }
+            (0x00, 0x00, 0x00, 0x00, _) => {
+                self.op_0nnn_call(opcode);
+            }
+            (0x00, 0x00, 0x0E, 0x00, _) => {
+                self.op_00e0_display(display);
+            }
+            (0x00, 0x00, 0x0E, 0x0E, _) => {
+                self.op_00ee_flow();
+            }
+            (0x01, _, _, _, _) => {
+                self.op_1nnn_flow(opcode);
+            }
+            (0x02, _, _, _, _) => {
+                self.op_2nnn_flow(opcode);
+            }
+            (0x03, _, _, _, _) => {
+                self.op_3xnn_cond(opcode);
+            }
+            (0x04, _, _, _, _) => {
+                self.op_4xnn_cond(opcode);
+            }
+            (0x05, _, _, 0x00, _) => {
+                self.op_5xy0_cond(opcode);
+            }
+            (0x06, _, _, _, _) => {
+                self.ld_v(opcode);
+            }
+            (0x07, _, _, _, _) => {
+                self.add_x(opcode);
+            }
+            (0x08, _, _, 0x00, _) => {
+                self.op_8xy4_assig(opcode);
+            }
+            (0x08, _, _, 0x02, _) => {
+                self.op_8xy2_bitop(opcode);
+            }
+            (0x08, _, _, 0x03, _) => {
+                self.op_8xy3_bitop(opcode);
+            }
+            (0x08, _, _, 0x04, _) => {
+                self.op_8xy4_math(opcode);
+            }
+            (0x08, _, _, 0x05, _) => {
+                self.op_8xy5_math(opcode);
+            }
+            (0x08, _, _, 0x0E, _) => {
+                self.op_8xye_bitop(opcode);
+            }
+            (0x09, _, _, 0x00, _) => {
+                self.op_9xy0_cond(opcode);
+            }
+            (0x0A, _, _, _, _) => {
+                self.ld_i(opcode);
+            }
+            (0x0B, _, _, _, _) => {
+                self.bnnn_flow(opcode);
+            }
+            (0x0C, _, _, _, _) => {
+                self.rnd_v(opcode);
+            }
+            (0x0D, _, _, _, _) => {
+                self.drw(opcode, display, memory);
+            }
+            (0x0F, _, 0x01, 0x05, _) => {
+                self.op_fx15_timer(opcode);
+            }
+            (0x0F, _, 0x01, 0x0E, _) => {
+                self.op_fx1e_mem(opcode);
+            }
+            (0x0F, _, 0x02, 0x09, _) => {
+                self.op_fx29_mem(opcode);
+            }
+            (0x0F, _, 0x05, 0x05, _) => {
+                self.op_fx55_mem(opcode, memory);
+            }
+            (0x0F, _, 0x06, 0x05, _) => {
+                self.op_fx65_mem(opcode, memory);
+            }
             _ => {
                 println!("Unknown opcode: {:#06X}", opcode.4);
                 panic!();
@@ -137,7 +194,6 @@ impl Cpu {
             self.pc += 2;
         }
     }
-
 
     /**
     Skip next instruction if Vx = kk.
@@ -228,7 +284,7 @@ impl Cpu {
     }
 
     fn op_fx15_timer(&mut self, opcode: (u8, u8, u8, u8, u16)) {
-      let x = opcode.1 as usize;
+        let x = opcode.1 as usize;
         self.i += x as u16;
     }
 

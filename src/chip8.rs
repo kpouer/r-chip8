@@ -2,7 +2,7 @@ use crate::cpu::Cpu;
 use crate::display::Display;
 
 const MAX_MEMORY: usize = 4096;
-const OFFSET : usize = 0x200;
+const OFFSET: usize = 0x200;
 
 // http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 // https://en.wikipedia.org/wiki/CHIP-8
@@ -16,7 +16,7 @@ pub(crate) struct Chip8 {
 
 impl Chip8 {
     pub(crate) fn new(rom: Vec<u8>) -> Self {
-        let mut memory: [u8;MAX_MEMORY] =[0; MAX_MEMORY];
+        let mut memory: [u8; MAX_MEMORY] = [0; MAX_MEMORY];
         for (i, &byte) in rom.iter().enumerate() {
             memory[OFFSET + i] = byte;
         }

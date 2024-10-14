@@ -4,16 +4,13 @@ const HEIGHT: usize = 32;
 #[derive(Clone, Debug)]
 pub(crate) struct Display {
     pub(crate) vram: [[bool; WIDTH]; HEIGHT],
-    dirty: bool
+    dirty: bool,
 }
 
 impl Display {
     pub(crate) fn new() -> Self {
         let vram = [[false; WIDTH]; HEIGHT];
-        Self {
-            vram,
-            dirty: false
-        }
+        Self { vram, dirty: false }
     }
 
     fn console_output(&self) {
@@ -49,7 +46,6 @@ impl Display {
     pub(crate) fn reset_dirty_flag(&mut self) {
         self.dirty = false;
     }
-
 
     /// Set a pixel to 1 if it is currently 0, and to 0 if it is currently 1.
     /// Returns 1 if the pixel was modified.

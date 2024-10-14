@@ -14,6 +14,10 @@ mod display;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    if args.len() != 2 {
+        println!("Usage: chip8 <rom>");
+        std::process::exit(1);
+    }
     let rom_name = args.get(1).unwrap();
     println!("rom_name: {}", rom_name);
     let rom_bytes = std::fs::read(rom_name).unwrap();
@@ -40,10 +44,8 @@ fn main() {
 
     {
         let chip8 = chip8.clone();
-        thread::spawn(move || {
-            loop {
-                chip8.lock().unwrap().cycle();
-            }
+        thread::spawn(move || loop {
+            chip8.lock().unwrap().cycle();
         });
     }
     let sleep_duration = Duration::from_millis(2);
